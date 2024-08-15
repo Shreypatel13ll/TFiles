@@ -1,15 +1,10 @@
-import express from 'express';
-import dotenv from 'dotenv';
+import environment from './src/config/environment';
+import './src/config/db.config';
+import model from './src/model/fileSystem.model';
+import server from './src/server';
 
-dotenv.config();
+const port = environment['PORT'];
 
-const app = express();
-const port = process.env.PORT;
-
-app.get('/', (req, res) => {
-  res.send('Express + TypeScript Server');
-});
-
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
 });
