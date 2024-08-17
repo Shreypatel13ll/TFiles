@@ -1,6 +1,5 @@
 import environment from './src/config/environment';
 import './src/config/db.config';
-import model from './src/model/fileSystem.model';
 import server from './src/server';
 
 const port = environment['PORT'];
