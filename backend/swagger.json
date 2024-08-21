@@ -1,0 +1,184 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Swagger Tfile API",
+    "description": "API for Tfile"
+  },
+  "host": "localhost:3000",
+  "basePath": "/api/v1",
+  "tags": [
+    {
+      "name": "FileSystem",
+      "description": "API for FileSystem"
+    }
+  ],
+  "schemes": ["http"],
+  "paths": {
+    "/file-system/{id}": {
+      "get": {
+        "tags": ["FileSystem"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of file/file-system to return",
+            "type": "string"
+          }
+        ],
+        "summary": "Get all folders and files",
+        "description": "Get all folders and files",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/FileSystem"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["FileSystem"],
+        "summary": "Delete an existing folder",
+        "description": "Delete an existing folder",
+        "operationId": "deleteFolder",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of file/file-system to return",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/file-system/rename/{id}": {
+      "put": {
+        "tags": ["FileSystem"],
+        "summary": "Update an existing folder",
+        "description": "Update an existing folder",
+        "operationId": "updateFolder",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of file/file-system to return",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Folder object that needs to be updated",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "newName": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/file-system/create": {
+      "post": {
+        "tags": ["FileSystem"],
+        "summary": "Update an existing folder",
+        "description": "Update an existing folder",
+        "operationId": "updateFolder",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Folder object that needs to be updated",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/FileSystem"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/FileSystem"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "FileSystem": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "parent": {
+          "type": "string"
+        },
+        "createdOn": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastModified": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FileSystem"
+          }
+        },
+        "__v": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    }
+  }
+}

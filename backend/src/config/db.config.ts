@@ -3,15 +3,11 @@ import environment from './environment';
 
 const mongoString = environment['DATABASE_URL'];
 
-mongoose.connect(mongoString);
-const database = mongoose.connection;
-
-database.on('error', (error) => {
-    console.log(error)
-})
-
-database.once('connected', () => {
-    console.log('Database Connected');
-})
-
-export default database;
+export const Connect = async () => {
+    try {
+        await mongoose.connect(mongoString);
+        console.log('Database Connected');
+    } catch (error) {
+        console.log(error);
+    }
+}

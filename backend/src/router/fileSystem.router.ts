@@ -3,9 +3,9 @@ import fileController from '../controller/fileSystem/fileSystem.controller';
 
 const router = express.Router();
 
-router.get('/get', fileController.get);
+router.get('/:id', fileController.get);
 router.post('/create', fileController.create);
-router.post('/rename', fileController.rename);
-router.delete('/delete', fileController.delete_);
+router.put('/rename/:id', fileController.rename);
+router.delete('/:id', fileController.delete_);
 
 export default router;

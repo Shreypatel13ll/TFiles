@@ -1,15 +1,14 @@
 import { Request, Response } from "express";
 import fileSystemModel from "../../model/fileSystem.model";
 import { AddEntry, RenameEntry, DeleteEntry } from "./fileSystem.helper";
-import Stack from "../../utils/Stack";
 
 const get = async (req: Request, res: Response) => {
-    const { objectId } = req.query;
-    if (!objectId) {
-        return res.status(400).send({ error: 'objectId is required' });
+    const { id } = req.params;
+    if (!id) {
+        return res.status(400).send({ error: 'id is required' });
     }
     try {
-        const data = await fileSystemModel.findById(objectId);
+        const data = await fileSystemModel.findById(id);
         if (!data) {
             return res.status(404).send({ error: 'File not found' });
         }
@@ -25,6 +24,10 @@ const create = async (req: Request, res: Response) => {
             return res.status(400).send({ error: 'name, type and parentId are required' });
         }
         try {
+            const parent = await fileSystemModel.findById(parentId);
+            if (!parent) {
+                return res.status(404).send({ error: 'Parent not found' });
+            }
             await AddEntry(name, type, content, parentId);
             return res.send({ message: 'File created successfully' });
         } catch (error: any) {
@@ -34,11 +37,12 @@ const create = async (req: Request, res: Response) => {
 
 const rename = async (req: Request, res: Response) => {
     try {
-        const { objectId, newName } = req.body;
-        if (!objectId || !newName) {
-            return res.status(400).send({ error: 'objectId and newName are required' });
+        const id = req.params.id;
+        const newName = req.body.newName;
+        if (!id || !newName) {
+            return res.status(400).send({ error: 'id and newName are required' });
         }
-        await RenameEntry(objectId, newName);
+        await RenameEntry(id, newName);
         return res.send({ message: 'File renamed successfully' });
     }
     catch (error: any) {
@@ -48,13 +52,13 @@ const rename = async (req: Request, res: Response) => {
 
 const delete_ = async (req: Request, res: Response) => {
     try {
-        const { objectId } = req.query;
-        if (!objectId) {
-            return res.status(400).send({ error: 'objectId is required' });
-        } else if (objectId === '66be43fd80dd456068a02b02'){
+        const { id } = req.params;
+        if (!id) {
+            return res.status(400).send({ error: 'id is required' });
+        } else if (id === '66be43fd80dd456068a02b02'){
             return res.status(400).send({ error: 'Cannot delete root directory' });
         }
-        await DeleteEntry(objectId as string);
+        await DeleteEntry(id as string);
         return res.send({ message: 'File deleted successfully' });
     }
     catch (error: any) {
