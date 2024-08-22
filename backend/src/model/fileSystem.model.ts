@@ -10,20 +10,14 @@ const fileSystemSchema = new mongoose.Schema({
         required: true,
         enum: ['file', 'dir']
     },
-    content: {
-        type: String,
-        required: function (this: { type: string }) {
-            return this.type === 'file';
-        }
-    },
     parent: {
         type: Schema.Types.ObjectId,
-        ref: 'FileSystem',
+        ref: 'data',
         default: null
     },
     children: [{
         type: Schema.Types.ObjectId,
-        ref: 'FileSystem'
+        ref: 'data'
     }],
     createdOn: {
         type: Date,
