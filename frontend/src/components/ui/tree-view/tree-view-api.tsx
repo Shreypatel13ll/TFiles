@@ -34,7 +34,7 @@ type TreeContextProps = {
   direction: "rtl" | "ltr";
 };
 
-const TreeContext = createContext<TreeContextProps | null>(null);
+export const TreeContext = createContext<TreeContextProps | null>(null);
 
 const useTree = () => {
   const context = useContext(TreeContext);
@@ -44,7 +44,7 @@ const useTree = () => {
   return context;
 };
 
-interface TreeViewComponentProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface TreeViewComponentProps extends React.HTMLAttributes<HTMLDivElement> { }
 
 type Direction = "rtl" | "ltr" | undefined;
 
@@ -202,13 +202,14 @@ const TreeIndicator = forwardRef<
 TreeIndicator.displayName = "TreeIndicator";
 
 interface FolderComponentProps
-  extends React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Item> {}
+  extends React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Item> { }
 
 type FolderProps = {
   expendedItems?: string[];
   element: string;
   isSelectable?: boolean;
   isSelect?: boolean;
+  onFolderExpand?: (id: string) => void;
 } & FolderComponentProps;
 
 const Folder = forwardRef<
@@ -220,6 +221,7 @@ const Folder = forwardRef<
       className,
       element,
       value,
+      onFolderExpand,
       isSelectable = true,
       isSelect,
       children,
@@ -254,7 +256,10 @@ const Folder = forwardRef<
             }
           )}
           disabled={!isSelectable}
-          onClick={() => handleExpand(value)}
+          onClick={() => {
+            handleExpand(value)
+            onFolderExpand?.(value);            
+          }}
         >
           {expendedItems?.includes(value)
             ? openIcon ?? <FolderOpenIcon className="h-4 w-4" />
@@ -287,7 +292,7 @@ const File = forwardRef<
   HTMLButtonElement,
   {
     value: string;
-    handleSelect?: (id: string) => void;
+    onFileSelect?: (id: string) => void;
     isSelectable?: boolean;
     isSelect?: boolean;
     fileIcon?: React.ReactNode;
@@ -297,7 +302,7 @@ const File = forwardRef<
     {
       value,
       className,
-      handleSelect,
+      onFileSelect,
       isSelectable = true,
       isSelect,
       fileIcon,
@@ -324,7 +329,10 @@ const File = forwardRef<
             isSelectable ? "cursor-pointer" : "opacity-50 cursor-not-allowed",
             className
           )}
-          onClick={() => selectItem(value)}
+          onClick={() => {
+            selectItem(value)
+            onFileSelect?.(value)            
+          }}
         >
           {fileIcon ?? <FileIcon className="h-4 w-4" />}
           {children}
@@ -362,7 +370,6 @@ const CollapseButton = forwardRef<
   }, []);
 
   useEffect(() => {
-    console.log(expandAll);
     if (expandAll) {
       expendAllTree(elements);
     }

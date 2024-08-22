@@ -9,7 +9,7 @@ import {
 
 const Navbar = () => {
     return (
-        <div className='m-4'>
+        <div className='p-4'>
             <Breadcrumb>
                 <BreadcrumbList>
                     <BreadcrumbItem>

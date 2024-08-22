@@ -19,6 +19,8 @@ interface TreeViewComponentProps extends React.HTMLAttributes<HTMLDivElement> {}
 type TreeViewProps = {
   initialSelectedId?: string;
   elements: TreeViewElement[];
+  onFileSelect?: (id: string) => void;
+  onFolderExpand?: (id: string) => void;
   indicator?: boolean;
 } & (
   | {
@@ -35,6 +37,8 @@ type TreeViewProps = {
 export const TreeView = ({
   elements,
   className,
+  onFileSelect,
+  onFolderExpand,
   initialSelectedId,
   initialExpendedItems,
   expandAll,
@@ -71,6 +75,8 @@ export const TreeView = ({
           <TreeItem
             aria-label="Root"
             key={element.key}
+            onFileSelect={onFileSelect}
+            onFolderExpand={onFolderExpand}
             elements={[elements[element.index]]}
             indicator={indicator}
           />
@@ -89,9 +95,11 @@ export const TreeItem = forwardRef<
   HTMLUListElement,
   {
     elements?: TreeViewElement[];
+    onFileSelect?: (id: string) => void;
+    onFolderExpand?: (id: string) => void;
     indicator?: boolean;
   } & React.HTMLAttributes<HTMLUListElement>
->(({ className, elements, indicator, ...props }, ref) => {
+>(({ className, elements, onFileSelect, onFolderExpand, indicator, ...props }, ref) => {
   return (
     <ul ref={ref} className="w-full space-y-1 " {...props}>
       {elements &&
@@ -101,11 +109,14 @@ export const TreeItem = forwardRef<
               <Folder
                 element={element.name}
                 value={element.id}
+                onFolderExpand={onFolderExpand}
                 isSelectable={element.isSelectable}
               >
                 <TreeItem
                   key={element.id}
                   aria-label={`folder ${element.name}`}
+                  onFileSelect={onFileSelect}
+                  onFolderExpand={onFolderExpand}
                   elements={element.children}
                   indicator={indicator}
                 />
@@ -115,6 +126,7 @@ export const TreeItem = forwardRef<
                 value={element.id}
                 aria-label={`File ${element.name}`}
                 key={element.id}
+                onFileSelect={onFileSelect}
                 isSelectable={element.isSelectable}
               >
                 <span>{element?.name}</span>

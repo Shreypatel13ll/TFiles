@@ -1,83 +1,56 @@
 "use client";
 
-import {
-  Tree,
-  Folder,
-  File,
-  CollapseButton,
-} from "@/components/ui/tree-view/tree-view-api";
+import { TreeView } from "@/components/ui/tree-view/tree-view";
+import useFetchFs from "@/hooks/useFetchFs";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/redux/store";
+import { useEffect, useState, useCallback } from "react";
+import { TreeViewElement } from "@/components/ui/tree-view/tree-view-api";
+import { treeToElem } from "@/utils/treeToElem";
 
 const ExplorerTree = () => {
-  const elements = [
-    {
-      id: "1",
-      isSelectable: true,
-      name: "src",
-      children: [
-        {
-          id: "2",
-          isSelectable: true,
-          name: "app.tsx",
-        },
-        {
-          id: "3",
-          isSelectable: true,
-          name: "components",
-          children: [
-            {
-              id: "20",
-              isSelectable: true,
-              name: "pages",
-              children: [
-                {
-                  id: "21",
-                  isSelectable: true,
-                  name: "interface.ts",
-                },
-              ],
-            },
-          ],
-        },
-        {
-          id: "6",
-          isSelectable: true,
-          name: "ui",
-          children: [
-            {
-              id: "7",
-              isSelectable: true,
-              name: "carousel.tsx",
-            },
-          ],
-        },
-      ],
-    },
-  ];
+
+  const [elements, setElements] = useState<TreeViewElement[]>([]);
+
+  const fetch = useFetchFs();
+
+  const handleFolderExpand = useCallback(async (id: string) => {
+    const fetchedItems = await fetch(id); // Fetch the contents of the folder
+    const newElem = treeToElem(fetchedItems);
+    const newElements = elements.map((element) => {
+      if (element.id === id) {
+        return newElem;
+      }
+      return element;
+    });
+    setElements(newElements);
+  }, [elements]);
+
+  const handleFileSelect = useCallback((id: string) => {
+    console.log(`File with id ${id} selected`);
+  }, []);
+
+  const tree = useSelector((state: RootState) => state.fileTree.root);
+
+  useEffect(() => {
+    if (!tree) {
+      return;
+    }
+    console.log(elements);
+    
+    setElements([treeToElem(tree)]);
+    
+  }, [tree]);
+
   return (
-    <Tree
-      className="rounded-md h-60 bg-background overflow-hidden p-2"
+    <TreeView
+      className="h-full"
       initialSelectedId="21"
       elements={elements}
-    >
-      <Folder element="src" value="1">
-        <File value="2">
-          <p> app.tsx </p>
-        </File>
-        <Folder value="3" element="components">
-          <Folder value="20" element="pages">
-            <File value="21">
-              <p>interface.ts</p>
-            </File>
-          </Folder>
-        </Folder>
-        <Folder value="6" element="ui">
-          <File value="7">
-            <p>carousel.tsx</p>
-          </File>
-        </Folder>
-      </Folder>
-      <CollapseButton elements={elements} />
-    </Tree>
+      initialExpendedItems={["root"]}
+      onFolderExpand={handleFolderExpand}
+      onFileSelect={handleFileSelect}
+    />
   );
 };
 
