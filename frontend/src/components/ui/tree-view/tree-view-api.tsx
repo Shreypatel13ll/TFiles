@@ -239,6 +239,14 @@ const Folder = forwardRef<
       closeIcon,
     } = useTree();
 
+    const isExpanded = expendedItems?.includes(value);
+
+    const handleClick = () => {
+      if (!isExpanded) {
+        onFolderExpand?.(value);  // Call onFolderExpand only when expanding
+      }
+      handleExpand(value);
+    };
     return (
       <AccordionPrimitive.Item
         {...props}
@@ -256,10 +264,8 @@ const Folder = forwardRef<
             }
           )}
           disabled={!isSelectable}
-          onClick={() => {
-            handleExpand(value)
-            onFolderExpand?.(value);            
-          }}
+          onClick={handleClick}
+
         >
           {expendedItems?.includes(value)
             ? openIcon ?? <FolderOpenIcon className="h-4 w-4" />

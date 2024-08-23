@@ -17,13 +17,17 @@ const ExplorerTree = () => {
   const handleFolderExpand = useCallback(async (id: string) => {
     const fetchedItems = await fetch(id); // Fetch the contents of the folder
     const newElem = treeToElem(fetchedItems);
-    const newElements = elements.map((element) => {
+
+    const traverse = (element: TreeViewElement) => {
       if (element.id === id) {
-        return newElem;
+        element.children = newElem.children;        
+        setElements([...elements]);
+      } else if (element.children) {
+        element.children.forEach(traverse);
       }
-      return element;
-    });
-    setElements(newElements);
+    }
+
+    traverse(elements[0]);
   }, [elements]);
 
   const handleFileSelect = useCallback((id: string) => {
@@ -36,10 +40,9 @@ const ExplorerTree = () => {
     if (!tree) {
       return;
     }
-    console.log(elements);
     
     setElements([treeToElem(tree)]);
-    
+
   }, [tree]);
 
   return (

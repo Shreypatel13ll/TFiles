@@ -30,6 +30,9 @@ const fileTreeSlice = createSlice({
                     if (folder._id === action.payload.parent) {
                         return { ...folder, children: [...folder.children, action.payload] };
                     }
+                    if (folder.type !== 'folder') {
+                        return folder;
+                    }
                     return { ...folder, children: folder.children.map(updateFolder) };
                 };
                 state.root = updateFolder(state.root);
