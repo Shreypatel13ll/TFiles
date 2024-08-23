@@ -4,7 +4,7 @@ import type CustomFile from '../../interfaces/CustomFile'
 
 interface FileSystemState {
     root: CustomFile | null
-    selectedFile: CustomFile | null
+    selectedFile: string | null
     loading: boolean
     error: string | null
 }
@@ -44,7 +44,11 @@ const fileTreeSlice = createSlice({
         fetchFolderFailure: (state, action: PayloadAction<string>) => {
             state.loading = false;
             state.error = action.payload;
+        },
+        selectFs: (state, action: PayloadAction<string>) => {
+            state.selectedFile = action.payload;
         }
+
     },
 });
 
@@ -53,6 +57,7 @@ export const {
     fetchFolderRequest,
     fetchFolderSuccess,
     fetchFolderFailure,
+    selectFs,
 } = fileTreeSlice.actions;
 
 export default fileTreeSlice.reducer;
