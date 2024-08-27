@@ -17,8 +17,8 @@ const ExplorerTree = () => {
 
   const handleFolderExpand = useCallback(async (id: string) => {
     const fetchedItems = await fetch(id); // Fetch the contents of the folder
+    select(fetchedItems);
     const newElem = treeToElem(fetchedItems);
-    select(id);
 
     const traverse = (element: TreeViewElement) => {
       if (element.id === id) {
@@ -33,7 +33,7 @@ const ExplorerTree = () => {
   }, [elements]);
 
   const handleFileSelect = useCallback((id: string) => {
-    select(id);
+    // select();
   }, []);
 
   const tree = useSelector((state: RootState) => state.fileTree.root);

@@ -1,10 +1,9 @@
-import { FileIcon, FolderOpenIcon } from "lucide-react";
-
+import DisplayFolder from "./DisplayFolder";
 
 const Canvas = () => {
   return (
-    <div className="">
-      
+    <div className="p-4">
+      <DisplayFolder />
     </div>
   )
 }

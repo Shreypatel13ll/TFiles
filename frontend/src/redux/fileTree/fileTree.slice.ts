@@ -4,7 +4,7 @@ import type CustomFile from '../../interfaces/CustomFile'
 
 interface FileSystemState {
     root: CustomFile | null
-    selectedFile: string | null
+    selectedFile: CustomFile | null
     loading: boolean
     error: string | null
 }
@@ -28,7 +28,8 @@ const fileTreeSlice = createSlice({
             if (state.root) {
                 const updateFolder = (folder: CustomFile): CustomFile => {
                     if (folder._id === action.payload.parent) {
-                        return { ...folder, children: [...folder.children, action.payload] };
+                        folder.children.filter((child) => child._id !== action.payload._id).push(action.payload)
+                        return folder;
                     }
                     if (folder.type !== 'folder') {
                         return folder;
@@ -45,7 +46,7 @@ const fileTreeSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
         },
-        selectFs: (state, action: PayloadAction<string>) => {
+        selectFs: (state, action: PayloadAction<CustomFile>) => {
             state.selectedFile = action.payload;
         }
 
