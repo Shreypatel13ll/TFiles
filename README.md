@@ -39,6 +39,9 @@ A simple file manager application built using MongoDB, Express, and React with T
    ```bash
    npm start
    ```
+   
+5. Go to swagger documentation:
+   `<host_url>/api-docs`
 
 ### Frontend Setup
 1. Navigate to the frontend directory:
